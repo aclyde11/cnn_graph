@@ -745,7 +745,7 @@ class cgcnn(base_model):
                 num_epochs=20, learning_rate=0.1, decay_rate=0.95, decay_steps=None, momentum=0.9,
                 regularization=0, dropout=0, batch_size=100, eval_frequency=200,
                 dir_name=''):
-        super().__init__()
+        super(self).__init__()
         
         # Verify the consistency w.r.t. the number of layers.
         assert len(L) >= len(F) == len(K) == len(p)
