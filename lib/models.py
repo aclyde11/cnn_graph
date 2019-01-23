@@ -130,7 +130,7 @@ class base_model(object):
         writer.close()
         sess.close()
         
-        return accuracies, losses, t_step
+        return accuracies, losses
 
     def get_var(self, name):
         sess = self._get_session()
