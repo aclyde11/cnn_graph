@@ -7,6 +7,7 @@ import numpy as np
 import os, time, collections, shutil
 import time
 
+
 #NFEATURES = 28**2
 #NCLASSES = 10
 
@@ -68,7 +69,6 @@ class base_model(object):
         labels: size N
             N: number of signals (samples)
         """
-        t_process, t_wall = time.process_time(), time.time()
         predictions, loss = self.predict(data, labels, sess)
         #print(predictions)
         ncorrects = sum(predictions == labels)
@@ -76,12 +76,9 @@ class base_model(object):
         f1 = 100 * sklearn.metrics.f1_score(labels, predictions, average='weighted')
         string = 'accuracy: {:.2f} ({:d} / {:d}), f1 (weighted): {:.2f}, loss: {:.2e}'.format(
                 accuracy, ncorrects, len(labels), f1, loss)
-        if sess is None:
-            string += '\ntime: {:.0f}s (wall {:.0f}s)'.format(time.process_time()-t_process, time.time()-t_wall)
         return string, accuracy, f1, loss
 
     def fit(self, train_data, train_labels, val_data, val_labels):
-        t_process, t_wall = time.process_time(), time.time()
         sess = tf.Session(graph=self.graph)
         shutil.rmtree(self._get_path('summaries'), ignore_errors=True)
         writer = tf.summary.FileWriter(self._get_path('summaries'), self.graph)
@@ -117,7 +114,6 @@ class base_model(object):
                 accuracies.append(accuracy)
                 losses.append(loss)
                 print('  validation {}'.format(string))
-                print('  time: {:.0f}s (wall {:.0f}s)'.format(time.process_time()-t_process, time.time()-t_wall))
 
                 # Summaries for TensorBoard.
                 summary = tf.Summary()
@@ -134,7 +130,6 @@ class base_model(object):
         writer.close()
         sess.close()
         
-        t_step = (time.time() - t_wall) / num_steps
         return accuracies, losses, t_step
 
     def get_var(self, name):
