@@ -946,21 +946,24 @@ class cgcnn(base_model):
     def _inference(self, x, dropout):
         # Graph convolutional layers.
         x = tf.expand_dims(x, 2)  # N x M x F=1
+        highway = None
         for i in range(len(self.p)):
             with tf.variable_scope('conv{}'.format(i+1)):
                 with tf.name_scope('filter'):
                     x = self.filter(x, self.L[i], self.F[i], self.K[i])
+                    highway = tf.add(x, highway)
                 with tf.name_scope('bias_relu'):
                     x = self.brelu(x)
                 with tf.name_scope('pooling'):
                     x = self.pool(x, self.p[i])
-        
+
         # Fully connected hidden layers.
         N, M, F = x.get_shape()
         x = tf.reshape(x, [int(N), int(M*F)])  # N x M
         for i,M in enumerate(self.M[:-1]):
             with tf.variable_scope('fc{}'.format(i+1)):
                 x = self.fc(x, M)
+                highway = tf.add(highway, x)
                 x = tf.nn.dropout(x, dropout)
         
         # Logits linear layer, i.e. softmax without normalization.
