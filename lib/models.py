@@ -952,6 +952,7 @@ class cgcnn(base_model):
                 with tf.name_scope('filter'):
                     x = self.filter(x, self.L[i], self.F[i], self.K[i])
                     if highway is not None:
+                        x = self.filter(highway, self.L[i], self.F[i], self.K[i])
                         highway = tf.add(highway, x)
                 with tf.name_scope('bias_relu'):
                     x = self.brelu(x)
