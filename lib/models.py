@@ -951,11 +951,15 @@ class cgcnn(base_model):
             with tf.variable_scope('conv{}'.format(i+1)):
                 with tf.name_scope('filter'):
                     x = self.filter(x, self.L[i], self.F[i], self.K[i])
-                    highway = tf.add(x, highway)
+                    highway = tf.add(highway, x)
                 with tf.name_scope('bias_relu'):
                     x = self.brelu(x)
                 with tf.name_scope('pooling'):
                     x = self.pool(x, self.p[i])
+                    if highway is None:
+                        highway = x
+                    else:
+                        highway = self.pool(highway, self.p[i])
 
         # Fully connected hidden layers.
         N, M, F = x.get_shape()
