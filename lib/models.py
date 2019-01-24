@@ -946,22 +946,17 @@ class cgcnn(base_model):
     def _inference(self, x, dropout):
         # Graph convolutional layers.
         x = tf.expand_dims(x, 2)  # N x M x F=1
-        highway = None
+        highway = x
         for i in range(len(self.p)):
             with tf.variable_scope('conv{}'.format(i+1)):
                 with tf.name_scope('filter'):
-                    x = self.filter(x, self.L[i], self.F[i], self.K[i])
-                    if highway is not None:
-                        x = self.filter(highway, self.L[i], self.F[i], self.K[i])
-                        highway = tf.add(highway, x)
+                    x = self.filter(highway, self.L[i], self.F[i], self.K[i])
                 with tf.name_scope('bias_relu'):
                     x = self.brelu(x)
+                    highway = tf.add(highway, x)
                 with tf.name_scope('pooling'):
                     x = self.pool(x, self.p[i])
-                    if highway is None:
-                        highway = x
-                    else:
-                        highway = self.pool(highway, self.p[i])
+                    highway = self.pool(highway, self.p[i])
 
         # Fully connected hidden layers.
         N, M, F = x.get_shape()
