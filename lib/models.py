@@ -965,6 +965,7 @@ class cgcnn(base_model):
         # Fully connected hidden layers.
         N, M, F = x.get_shape()
         x = tf.reshape(x, [int(N), int(M*F)])  # N x M
+        highway = tf.reshape(highway,  [int(N), int(M*F)])  # N x M
         for i,M in enumerate(self.M[:-1]):
             with tf.variable_scope('fc{}'.format(i+1)):
                 x = self.fc(x, M)
