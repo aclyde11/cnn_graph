@@ -50,7 +50,7 @@ class GraphConvolution(Layer):
             self.bias = self.add_weight(name='bias', shape=(1, 1, self.F_1), initializer='uniform', trainable=True)
         super(GraphConvolution, self).build(input_shape)  # Be sure to call this at the end
 
-    def rescale_L(L, lmax=2):
+    def rescale_L(self, L, lmax=2):
         """Rescale the Laplacian eigenvalues in [-1,1]."""
         M, M = L.shape
         I = scipy.sparse.identity(M, format='csr', dtype=L.dtype)
@@ -108,3 +108,4 @@ class GraphConvolution(Layer):
 
     def compute_output_shape(self, input_shape):
         return (input_shape[0], self.M_0 / self.p_1, self.F_1)
+
