@@ -2,6 +2,8 @@ import numpy as np
 import scipy.sparse
 
 
+
+
 def coarsen(A, levels, self_connections=False):
     """
     Coarsen a graph, represented by its adjacency matrix A, at multiple
