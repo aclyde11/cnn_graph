@@ -78,7 +78,7 @@ class MyLayer(Layer):
             return x
 
     def call(self, x):
-        if len(x.get_shape) != 3:
+        if len(x.get_shape()) != 3:
             x = tf.expand_dims(x, 2)
             assert(x.get_shape()[1] == self.M_0)
             assert(x.get_shape()[2] == self.F_1)
